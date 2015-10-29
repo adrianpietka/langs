@@ -1,5 +1,5 @@
 from os import environ
-from TrendsApi import app
+from api import app
 
 if __name__ == '__main__':
     HOST = environ.get('SERVER_HOST', 'localhost')

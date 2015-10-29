@@ -1,4 +1,4 @@
 from flask import Flask
 app = Flask(__name__)
 
-import TrendsApi.routes
+import api.routes
