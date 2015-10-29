@@ -11,10 +11,10 @@ Python 3.5 + Flask
 ```
 $: cd /path/to/project
 $: python -m pip install -r requirements.txt
-$: python app.py
+$: python runserver.py
 ```
 
-Access: [http://localhost:5000](http://localhost:5000)
+Access: [http://localhost:5555](http://localhost:5555)
 
 ## Endpoints
 
