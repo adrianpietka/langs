@@ -10,7 +10,16 @@ Python 3.4 + Flask
 
 ## How to run Jobs?
 
-Incoming soon.
+```
+$: cd /path/to/project
+$: python executejob.py [job_name]
+```
+
+### Jobs
+
+```
+github - Update information from GitHub
+```
 
 ## How to run API?
 
@@ -20,9 +29,11 @@ $: python -m pip install -r requirements.txt
 $: python runserver.py
 ```
 
-Access: [http://localhost:5555](http://localhost:5555)
+### Access
 
-## Endpoints
+[http://localhost:5555](http://localhost:5555)
+
+### Endpoints
 
 ```
 / - Hello World!
@@ -30,6 +41,6 @@ Access: [http://localhost:5555](http://localhost:5555)
 
 ## Sources of information
 
-- ~~Twitter~~
-- ~~GitHub~~
-- ~~StackOverflow~~
+- [ ] GitHub
+- [ ] Twitter
+- [ ] StackOverflow

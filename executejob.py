@@ -1,6 +1,7 @@
 import sys
 import argparse
 import pymysql.cursors
+from source.github import github_sync_repositories, github_sync_metadata
 from os import environ
 
 if not __name__ == '__main__':
@@ -20,7 +21,8 @@ args = parser.parse_args()
 #connection = pymysql.connect(host=db_host, user=db_user, password=db_password, db=db_database, charset=db_charset, cursorclass=pymysql.cursors.DictCursor)
 
 if args.job == 'github':
-    import jobs.github_trends
+    github_sync_repositories()
+    github_sync_metadata()
 else:
     print('Unsupported job name: {}'.format(args.job))
 
