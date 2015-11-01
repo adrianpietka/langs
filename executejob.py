@@ -1,7 +1,7 @@
 import sys
 import argparse
 import pymysql.cursors
-from source.github import github_sync_repositories, github_sync_metadata
+from source.github import GitHub
 from os import environ
 
 if not __name__ == '__main__':
@@ -18,11 +18,11 @@ parser = argparse.ArgumentParser(description="Future of development - Execute Jo
 parser.add_argument('job', help="job name to execute (available jobs: github)")
 args = parser.parse_args()
 
+connection = 'connection to DB'
 #connection = pymysql.connect(host=db_host, user=db_user, password=db_password, db=db_database, charset=db_charset, cursorclass=pymysql.cursors.DictCursor)
 
 if args.job == 'github':
-    github_sync_repositories()
-    github_sync_metadata()
+    GitHub(connection).execute()
 else:
     print('Unsupported job name: {}'.format(args.job))
 
