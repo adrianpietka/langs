@@ -15,7 +15,7 @@ def github_top_languages():
         'FROM github_index '
         'WHERE language IS NOT NULL '
         'GROUP BY language '
-        'ORDER BY COUNT(*) DESC'
+        'ORDER BY COUNT(*) DESC '
         'LIMIT 10')
     with g.db.cursor() as cursor:
         cursor.execute(sql)
