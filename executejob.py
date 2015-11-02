@@ -18,7 +18,7 @@ github_username = environ.get('GITHUB_USERNAME', '')
 github_password = environ.get('GITHUB_PASSWORD', '')
 
 parser = argparse.ArgumentParser(description="Future of development - Execute Job.")
-parser.add_argument('job', help="job name to execute (available jobs: github)")
+parser.add_argument('job', help="job name to execute (available jobs: github-index, github-metadata)")
 args = parser.parse_args()
 
 try:
@@ -27,7 +27,7 @@ try:
     if args.job == 'github-index':
         GitHub(connection, github_username, github_password).sync_index()
     elif args.job == 'github-metadata':
-        GitHub(connection, github_username, github_password).sync_metadata()
+        GitHub(connection, github_username, github_password).sync_metadata(5000)
     else:
         print('Unsupported job name: {}'.format(args.job))
 finally:

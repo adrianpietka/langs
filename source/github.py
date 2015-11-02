@@ -1,4 +1,5 @@
 ﻿import requests
+from datetime import datetime
 
 class GitHub:
     def __init__(self, db, github_username, github_password):
@@ -6,9 +7,16 @@ class GitHub:
         self.github_username = github_username
         self.github_password = github_password
 
+    def convertDateTime(self, value):
+        try:
+            dt = datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
+            return dt.__format__('%Y-%m-%d %H:%M:%S')
+        except:
+            return value
+
     def get_repository_to_update_metadata(self, limit):
         with self.db.cursor() as cursor:
-            cursor.execute('SELECT id, full_name FROM github_index ORDER BY metadata_updated_at ASC LIMIT %s', (limit))
+            cursor.execute('SELECT id, full_name FROM github_index ORDER BY metadata_updated_at ASC, id DESC LIMIT %s', (limit))
             return cursor.fetchall()
 
     def get_last_repository_id(self):
@@ -19,7 +27,21 @@ class GitHub:
 
     def update_repository_metadata(self, id, metadata):
         with self.db.cursor() as cursor:
-            cursor.execute('UPDATE github_index SET metadata_updated_at = NOW() WHERE id = %s', (id))
+            sql = ('UPDATE github_index SET '
+                'metadata_updated_at = NOW(), '
+                'created_at = %s, '
+                'pushed_at = %s, '
+                'language = %s, '
+                'stargazers_count = %s, '
+                'watchers_count = %s, '
+                'forks_count = %s, '
+                'network_count = %s '
+                'WHERE id = %s')
+            values = (self.convertDateTime(metadata['created_at']), self.convertDateTime(metadata['pushed_at']),
+                metadata['language'], metadata['stargazers_count'],
+                metadata['watchers_count'], metadata['forks_count'],
+                metadata['network_count'], id)
+            cursor.execute(sql, values)
         self.db.commit();
 
     def add_repository(self, repository):
@@ -48,10 +70,10 @@ class GitHub:
             print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
             self.add_repository(repository)
         
-    def sync_metadata(self):
+    def sync_metadata(self, limit):
         print('GitHub - sync metadata of repositories')
-        repositories = get_repository_to_update_metadata()
-        for key in repositories:       
-            repository = repositories[key]
+        repositories = self.get_repository_to_update_metadata(limit)
+        for repository in repositories:
+            print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
             metadata = self.get_repository_metadata(repository['full_name'])
-            update_repository_metadata(repository['id'], metadata)
+            self.update_repository_metadata(repository['id'], metadata)

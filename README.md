@@ -6,34 +6,41 @@ Live demo: [future-of-development.azurewebsites.net](http://future-of-developmen
 
 ## Technologies
 
-Python 3.4 + Flask
+Python 3.4 + Flask + MySQL
 
-## How to run Jobs?
+## How to run?
+
+```
+$: cd /path/to/project
+$: python -m pip install -r requirements.txt
+```
+
+### How to run Jobs?
 
 ```
 $: cd /path/to/project
 $: python executejob.py [job_name]
 ```
 
-### Jobs
-
-```
-github - Update information from GitHub
-```
-
-## How to run API?
+### How to run API?
 
 ```
 $: cd /path/to/project
-$: python -m pip install -r requirements.txt
 $: python runserver.py
 ```
 
-### Access
+## Jobs - List
+
+```
+github-index - Update index of repositories from GitHub
+github-metadata - Update metadata for repositories (stars count, last push etc.)
+```
+
+## API - Access
 
 [http://localhost:5555](http://localhost:5555)
 
-### Endpoints
+## API - Endpoints
 
 ```
 / - Hello World!
