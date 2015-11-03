@@ -26,7 +26,20 @@
     <div id="gitHubStats" class="report-group">
       <p class="alert alert-info loading">Loading...</p>
       <div class="content">
-        <h4>Top 10</h4>
+        <h4>Stats:</h4>
+        <div class="well">
+          <div class="latest">Latest repository: <a href="#"></a> (<span></span>)</div>
+          <div class="oldest">Oldest repository: <a href="#"></a> (<span></span>)</div>
+          <div class="processed">Processed: <b>0</b> (<span></span>% of total)</div>
+          <div class="total">Total: <b>0</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gitHubRepositories" class="report-group">
+      <p class="alert alert-info loading">Loading...</p>
+      <div class="content">
+        <h4>Top 10:</h4>
         <div id="gitHubTopTenTable"></div>
 
         <h4>Percent of all repositories:</h4>
@@ -78,6 +91,23 @@
       return table;
     }
 
+    $.getJSON('/github/stats', function(response) {
+      var gitHubUrl = 'https://github.com/';
+
+      $('#gitHubStats .loading').hide();
+      $('#gitHubStats .content').show();
+
+      $('#gitHubStats .latest a').attr('href', gitHubUrl + response.data.latest.name).html(response.data.latest.name);
+      $('#gitHubStats .latest span').html(response.data.latest.created);
+
+      $('#gitHubStats .oldest a').attr('href', gitHubUrl + response.data.oldest.name).html(response.data.oldest.name);
+      $('#gitHubStats .oldest span').html(response.data.oldest.created);
+
+      $('#gitHubStats .processed b').html(response.data.processed);
+      $('#gitHubStats .processed span').html(Math.round((response.data.processed * 100) / response.data.total));
+      $('#gitHubStats .total b').html(response.data.total);
+    });
+
     $.getJSON('/github/languages', function(response) {
       var languageStats = [];
       var colors = ['#2484c1', '#0c6197', '#4daa4b', '#90c469', '#daca61', '#e4a14b',
@@ -86,8 +116,8 @@
         '#d1c87f', '#7d9058', '#44b9b0', '#7c37c0', '#cc9fb1', '#e65414', '#8b6834',
         '#248838', '#248838'];
 
-      $('#gitHubStats .loading').hide();
-      $('#gitHubStats .content').show();
+      $('#gitHubRepositories .loading').hide();
+      $('#gitHubRepositories .content').show();
 
       $.each(response.data, function(index, item) {
         languageStats.push({
