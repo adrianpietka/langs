@@ -1,6 +1,12 @@
 ﻿import requests
 from datetime import datetime
 
+class GitHubRepositoryBlocked(Exception):
+    pass
+
+class GitHubInvalidResponse(Exception):
+    pass
+
 class GitHub:
     def __init__(self, db, github_username, github_password):
         self.db = db
@@ -44,6 +50,18 @@ class GitHub:
             cursor.execute(sql, values)
         self.db.commit();
 
+    def omit_repository_metadata(self, id):
+        metadata = {
+            'created_at' : None,
+            'pushed_at' : None,
+            'language' : None,
+            'stargazers_count' : None,
+            'watchers_count' : None,
+            'forks_count' : None,
+            'network_count' : None
+        }
+        self.update_repository_metadata(id, metadata)
+
     def add_repository(self, repository):
         with self.db.cursor() as cursor:
             sql = 'INSERT INTO github_index (id, full_name, owner_login, description) VALUES(%s, %s, %s, %s)'
@@ -53,8 +71,10 @@ class GitHub:
 
     def request_get(self, url):
         response = requests.get(url, auth=(self.github_username, self.github_password)) if self.github_username != '' else  requests.get(url)
+        if response.status_code == 403 and 'block' in response.json():
+            raise GitHubRepositoryBlocked(url)
         if (response.status_code != 200):
-            raise Exception('Invalid response. Status code: {}'.format(response.status_code))
+            raise GitHubInvalidResponse('Invalid response for: {}. Status code: {}'.format(url, response.status_code))
         return response
 
     def get_repositories(self, last_repository_id):
@@ -62,18 +82,22 @@ class GitHub:
 
     def get_repository_metadata(self, full_name):
         return self.request_get('https://api.github.com/repos/{}'.format(full_name)).json()
-    
+
     def sync_index(self):
         print('GitHub - sync index of repositories')
         repositories = self.get_repositories(self.get_last_repository_id())
         for repository in repositories:
             print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
             self.add_repository(repository)
-        
+
     def sync_metadata(self, limit):
         print('GitHub - sync metadata of repositories')
         repositories = self.get_repository_to_update_metadata(limit)
         for repository in repositories:
-            print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
-            metadata = self.get_repository_metadata(repository['full_name'])
-            self.update_repository_metadata(repository['id'], metadata)
+            try:
+                print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
+                metadata = self.get_repository_metadata(repository['full_name'])
+                self.update_repository_metadata(repository['id'], metadata)
+            except GitHubRepositoryBlocked as e:
+                print('- repository blocked, omitted metadata')
+                self.omit_repository_metadata(repository['id'])
