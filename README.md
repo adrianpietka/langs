@@ -44,7 +44,7 @@ github-metadata - Update metadata for repositories (stars count, last push etc.)
 
 ```
 / - Hello World!
-/github/top-ten - The top ten programming languages
+/github/languages - Number of all repositories per programming language
 /github/new-repositories - Number of new repositories by programming language and date
 ```
 

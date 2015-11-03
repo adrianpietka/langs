@@ -1,22 +1,21 @@
 import pymysql
 import pprint
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify, g, render_template
 from config import config
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
-def hello():
-    return jsonify(data='Hello World!')
+def dashboard():
+    return render_template('dashboard.html')
 
-@app.route('/github/top-ten')
+@app.route('/github/languages')
 def github_top_languages():
-    sql = ('SELECT language, COUNT(*) AS `score`'
+    sql = ('SELECT language, COUNT(*) AS `repositories`'
         'FROM github_index '
         'WHERE language IS NOT NULL '
         'GROUP BY language '
-        'ORDER BY COUNT(*) DESC '
-        'LIMIT 10')
+        'ORDER BY COUNT(*) DESC')
     with g.db.cursor() as cursor:
         cursor.execute(sql)
         return jsonify(data=cursor.fetchall())

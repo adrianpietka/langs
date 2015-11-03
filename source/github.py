@@ -84,14 +84,14 @@ class GitHub:
         return self.request_get('https://api.github.com/repos/{}'.format(full_name)).json()
 
     def sync_index(self):
-        print('GitHub - sync index of repositories')
+        print('GitHub - sync index of repositories (as: {})'.format(self.github_username if self.github_username != '' else 'anonymous'))
         repositories = self.get_repositories(self.get_last_repository_id())
         for repository in repositories:
             print('Repository #{}: {}'.format(repository['id'], repository['full_name']))
             self.add_repository(repository)
 
     def sync_metadata(self, limit):
-        print('GitHub - sync metadata of repositories')
+        print('GitHub - sync metadata of repositories (as: {})'.format(self.github_username if self.github_username != '' else 'anonymous'))
         repositories = self.get_repository_to_update_metadata(limit)
         for repository in repositories:
             try:

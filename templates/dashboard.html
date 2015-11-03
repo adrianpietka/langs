@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Future of Development</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header clearfix">
+      <nav>
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="/">Stats</a></li>
+          <li><a href="#">API</a></li>
+          <li><a href="https://github.com/adrianpietka/langs">Source</a></li>
+        </ul>
+      </nav>
+      <h3 class="text-muted">Future of Development</h3>
+    </div>
+
+    <div id="gitHubStats" class="report-group">
+      <p class="alert alert-info loading">Loading...</p>
+      <div class="content">
+        <h4>Top 10</h4>
+        <div id="gitHubTopTenTable"></div>
+
+        <h4>Percent of all repositories:</h4>
+        <div id="gitHubPercentRepositories"></div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>by <a href="https://twitter.com/adrian_pietka">@adrian_pietka</a>.</p>
+    </footer>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="static/d3pie.min.js"></script>
+  <script>
+    function tabulate(container, data, columns) {
+      var table = d3.select(container).append('table').attr('class', 'table table-bordered table-hover'),
+          thead = table.append('thead'),
+          tbody = table.append('tbody');
+
+      // append the header row
+      thead.append('tr')
+          .selectAll('th')
+          .data(columns)
+          .enter()
+          .append('th')
+              .attr('class', function(column) { return column; })
+              .text(function(column) { return column; });
+
+      // create a row for each object in the data
+      var rows = tbody.selectAll('tr')
+          .data(data)
+          .enter()
+          .append('tr');
+
+      // create a cell in each row for each column
+      var cells = rows.selectAll('td')
+          .data(function(row) {
+              return columns.map(function(column) {
+                  return {column: column, value: row[column]};
+              });
+          })
+          .enter()
+          .append('td')
+              .text(function(d) { return d.value; });
+      
+      return table;
+    }
+
+    $.getJSON('/github/languages', function(response) {
+      var languageStats = [];
+      var colors = ['#2484c1', '#0c6197', '#4daa4b', '#90c469', '#daca61', '#e4a14b',
+        '#e98125', '#cb2121', '#830909', '#923e99', '#ae83d5', '#b0ec44', '#a4a0c9',
+        '#bf273e', '#ce2aeb', '#bca44a', '#618d1b', '#1ee67b', '#322849', '#86f71a',
+        '#d1c87f', '#7d9058', '#44b9b0', '#7c37c0', '#cc9fb1', '#e65414', '#8b6834',
+        '#248838', '#248838'];
+
+      $('#gitHubStats .loading').hide();
+      $('#gitHubStats .content').show();
+
+      $.each(response.data, function(index, item) {
+        languageStats.push({
+            'label': item.language,
+            'value': item.repositories,
+            'color': colors[index]
+        });
+      });
+
+      var topTenTable = tabulate('#gitHubTopTenTable', response.data.slice(0, 10), ['language', 'repositories']);
+      topTenTable.select('.language').text('Language');
+      topTenTable.select('.repositories').text('Repositories count');
+
+      var percentRepositoriesPie = new d3pie('gitHubPercentRepositories', {
+        'size': {
+          'canvasWidth': 730,
+          'pieOuterRadius': '95%'
+        },
+        'data': {
+          'sortOrder': 'value-desc',
+          'smallSegmentGrouping': {
+            'enabled': true
+          },
+          'content': languageStats
+        },
+        'labels': {
+          'outer': {
+            'pieDistance': 32
+          },
+          'inner': {
+            'hideWhenLessThanPercentage': 3
+          },
+          'mainLabel': {
+            'fontSize': 14
+          },
+          'percentage': {
+            'color': '#ffffff',
+            'decimalPlaces': 0
+          },
+          'value': {
+            'color': '#adadad',
+            'fontSize': 14
+          },
+          'lines': {
+            'enabled': true
+          },
+          'truncation': {
+            'enabled': true
+          }
+        },
+        'effects': {
+          'pullOutSegmentOnClick': {
+            'effect': 'linear',
+            'speed': 400,
+            'size': 8
+          }
+        },
+        'misc': {
+          'gradient': {
+            'enabled': true,
+            'percentage': 100
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
