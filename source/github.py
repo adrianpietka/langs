@@ -7,6 +7,9 @@ class GitHubRepositoryBlocked(Exception):
 class GitHubInvalidResponse(Exception):
     pass
 
+class GitHubRepositoryNotFound(Exception):
+    pass
+
 class GitHub:
     def __init__(self, db, github_username, github_password):
         self.db = db
@@ -73,6 +76,8 @@ class GitHub:
         response = requests.get(url, auth=(self.github_username, self.github_password)) if self.github_username != '' else  requests.get(url)
         if response.status_code == 403 and 'block' in response.json():
             raise GitHubRepositoryBlocked(url)
+        if response.status_code == 404:
+            raise GitHubRepositoryNotFound(url)
         if (response.status_code != 200):
             raise GitHubInvalidResponse('Invalid response for: {}. Status code: {}'.format(url, response.status_code))
         return response
@@ -100,4 +105,7 @@ class GitHub:
                 self.update_repository_metadata(repository['id'], metadata)
             except GitHubRepositoryBlocked as e:
                 print('- repository blocked, omitted metadata')
+                self.omit_repository_metadata(repository['id'])
+            except GitHubRepositoryNotFound as e:
+                print('- repository not found, omitted metadata')
                 self.omit_repository_metadata(repository['id'])

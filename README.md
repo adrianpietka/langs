@@ -43,7 +43,7 @@ github-metadata - Update metadata for repositories (stars count, last push etc.)
 ## API - Endpoints
 
 ```
-/ - Hello World!
+/ - UI Dashboard
 /github/languages - Number of all repositories per programming language
 /github/new-repositories - Number of new repositories by programming language and date
 ```
