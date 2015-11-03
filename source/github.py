@@ -73,7 +73,9 @@ class GitHub:
         self.db.commit()
 
     def request_get(self, url):
-        response = requests.get(url, auth=(self.github_username, self.github_password)) if self.github_username != '' else  requests.get(url)
+        headers = {'User-Agent': 'Future of Development'}
+        response = requests.get(url, headers=headers, 
+            auth=(self.github_username, self.github_password)) if self.github_username != '' else  requests.get(url)
         if response.status_code == 403 and 'block' in response.json():
             raise GitHubRepositoryBlocked(url)
         if response.status_code == 404:
