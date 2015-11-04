@@ -63,24 +63,36 @@ def github_top_languages():
         cursor.execute(sql)
         return jsonify(data=cursor.fetchall())
 
-@app.route('/github/new-repositories')
-def github_new_repositories():
-    sql = ('SELECT language, DATE(created_at) AS `created`, COUNT(*) AS `count` '
+@app.route('/github/new-repositories/monthly')
+def github_new_repositories_monthly():
+    sql = ('SELECT language, DATE_FORMAT(created_at, \'%Y-%m\') AS `created`, COUNT(*) AS `count` '
         'FROM github_index '
-        'WHERE language IS NOT NULL '
-        'GROUP BY language, DATE(created_at) '
-        'ORDER BY language ASC, DATE(created_at) DESC')
+        'WHERE language = \'Ruby\' OR language = \'PHP\' OR language = \'Python\' '
+        'GROUP BY language, DATE_FORMAT(created_at, \'%Y-%m\') '
+        'ORDER BY DATE(created_at) DESC')
     with g.db.cursor() as cursor:
         cursor.execute(sql)
-        results = cursor.fetchall()
         aggregated = {}
-        for item in results:
+        for item in cursor.fetchall():
             if not item['language'] in aggregated:
-                aggregated[item['language']] = []
-            aggregated[item['language']].append({
-                'date' : item['created'].isoformat(),
-                'count' : item['count']
-            })
+                aggregated[item['language']] = {}
+            aggregated[item['language']][item['created']] = item['count']
+        return jsonify(data=aggregated)
+
+@app.route('/github/new-repositories/yearly')
+def github_new_repositories_yearly():
+    sql = ('SELECT language, YEAR(created_at) AS `created`, COUNT(*) AS `count` '
+        'FROM github_index '
+        'WHERE language = \'Ruby\' OR language = \'PHP\' OR language = \'Python\' '
+        'GROUP BY language, YEAR(created_at) '
+        'ORDER BY DATE(created_at) DESC')
+    with g.db.cursor() as cursor:
+        cursor.execute(sql)
+        aggregated = {}
+        for item in cursor.fetchall():
+            if not item['language'] in aggregated:
+                aggregated[item['language']] = {}
+            aggregated[item['language']][item['created']] = item['count']
         return jsonify(data=aggregated)
 
 @app.errorhandler(404)

@@ -47,6 +47,14 @@
       </div>
     </div>
 
+    <div id="gitHubNewRepositoriesTrend" class="report-group">
+      <p class="alert alert-info loading">Loading new repositories trend...</p>
+      <div class="content">
+        <h4>New repositories trend:</h4>
+        <div id="gitHubNewRepositories"></div>
+      </div>
+    </div>
+
     <footer class="footer">
       <p>by <a href="https://twitter.com/adrian_pietka">@adrian_pietka</a>.</p>
     </footer>
@@ -56,6 +64,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="static/d3pie.min.js"></script>
+  <script src="static/d3.legend.js"></script>
+
   <script>
     function tabulate(container, data, columns) {
       var table = d3.select(container).append('table').attr('class', 'table table-bordered table-hover'),
@@ -91,6 +101,89 @@
       return table;
     }
 
+    $.getJSON('/github/new-repositories/monthly', function(response) {
+      $('#gitHubNewRepositoriesTrend .loading').hide();
+      $('#gitHubNewRepositoriesTrend .content').show();
+
+      var margin = {top: 20, right: 20, bottom: 30, left: 50},
+          width = 700 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+      
+      var parseDate = d3.time.format("%Y-%m").parse;
+      
+      var x = d3.time.scale().range([0, width]);
+      var y = d3.scale.linear().range([height, 0]);
+
+      var color = d3.scale.category10();
+
+
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+
+      var line = d3.svg.line()
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.count); });
+
+      var svg = d3.select("#gitHubNewRepositories").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var languages = [];
+      for (var language in response.data) {
+        data = [];
+      
+        for (var index in response.data[language]) {
+          data.push({
+            'date' : parseDate(index),
+            'count' : response.data[language][index]
+          });
+        };
+
+        languages.push({'name' : language, 'values' : data});
+      }
+
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+
+      y.domain([
+        d3.min(languages, function(l) { return d3.min(l.values, function(v) { return v.count; }); }),
+        d3.max(languages, function(l) { return d3.max(l.values, function(v) { return v.count; }); })
+      ]);
+
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Repositories");
+
+      var language = svg.selectAll(".language")
+        .data(languages)
+      .enter().append("g")
+        .attr("class", "language");
+
+      language.append("path")
+        .attr("class", "line")
+        .attr("d", function(d) { return line(d.values); })
+        .attr("data-legend",function(d) { return d.name})
+        .style("stroke", function(d) { return color(d.name); });
+
+      legend = svg.append("g")
+        .attr("class","legend")
+        .attr("transform","translate(50,30)")
+        .style("font-size","12px")
+        .call(d3.legend);
+    });
+
     $.getJSON('/github/stats', function(response) {
       var gitHubUrl = 'https://github.com/';
 
@@ -110,12 +203,12 @@
 
     $.getJSON('/github/languages', function(response) {
       var languageStats = [];
-      var colors = ['#2484c1', '#0c6197', '#4daa4b', '#90c469', '#daca61', '#e4a14b',
+      var colorsPie = ['#2484c1', '#0c6197', '#4daa4b', '#90c469', '#daca61', '#e4a14b',
         '#e98125', '#cb2121', '#830909', '#923e99', '#ae83d5', '#b0ec44', '#a4a0c9',
         '#bf273e', '#ce2aeb', '#bca44a', '#618d1b', '#1ee67b', '#322849', '#86f71a',
         '#d1c87f', '#7d9058', '#44b9b0', '#7c37c0', '#cc9fb1', '#e65414', '#8b6834',
         '#248838', '#248838'];
-
+      
       $('#gitHubRepositories .loading').hide();
       $('#gitHubRepositories .content').show();
 
@@ -123,7 +216,7 @@
         languageStats.push({
             'label': item.language,
             'value': item.repositories,
-            'color': colors[index]
+            'color': colorsPie[index]
         });
       });
 
@@ -133,8 +226,8 @@
 
       var percentRepositoriesPie = new d3pie('gitHubPercentRepositories', {
         'size': {
-          'canvasWidth': 730,
-          'pieOuterRadius': '95%'
+          'canvasWidth': 700,
+          'pieOuterRadius': '99%'
         },
         'data': {
           'sortOrder': 'value-desc',
