@@ -53,7 +53,16 @@ def github_stats():
     return jsonify(data=stats)
 
 @app.route('/github/languages')
-def github_top_languages():
+def github_languages():
+    sql = ('SELECT DISTINCT(language) AS `language`'
+        'FROM github_index '
+        'WHERE language IS NOT NULL ')
+    with g.db.cursor() as cursor:
+        cursor.execute(sql)
+        return jsonify(data=[row['language'] for row in cursor.fetchall()])
+
+@app.route('/github/languages/stats')
+def github_languages_stats():
     sql = ('SELECT language, COUNT(*) AS `repositories`'
         'FROM github_index '
         'WHERE language IS NOT NULL '

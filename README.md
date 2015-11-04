@@ -45,7 +45,8 @@ github-metadata - Update metadata for repositories (stars count, last push etc.)
 ```
 / - UI Dashboard
 /github/stats - Statistics - number of all repositories, latest repository etc.
-/github/languages - Number of all repositories per programming language
+/github/languages - List of all programming languages
+/github/languages/stats - Number of all repositories per programming language
 /github/new-repositories/monthly - Number of new repositories by programming language per month
 /github/new-repositories/yearly - Number of new repositories by programming language per year
 ```
