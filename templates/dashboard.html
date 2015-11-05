@@ -168,7 +168,7 @@
       var language = svg.selectAll(".language")
         .data(languages).enter()
       .append("g")
-        .attr("class", "language");
+        .attr("class", "language")
       .append("path")
         .attr("class", "line")
         .attr("d", function(d) { return line(d.values); })
