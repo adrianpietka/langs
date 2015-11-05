@@ -63,7 +63,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="static/d3pie.min.js"></script>
+  <script src="static/d3.pie.js"></script>
   <script src="static/d3.legend.js"></script>
 
   <script>
@@ -132,19 +132,18 @@
 
       var languages = [];
       for (var language in response.data) {
-        data = [];
+        var values = [];
       
-        for (var index in response.data[language]) {
-          data.push({
-            'date' : parseDate(index),
-            'count' : response.data[language][index]
+        for (var perioid in response.data[language]) {
+          values.push({
+            'date' : parseDate(perioid),
+            'count' : response.data[language][perioid]
           });
         };
 
-        languages.push({'name' : language, 'values' : data});
+        languages.push({'name' : language, 'values' : values});
+        x.domain(d3.extent(values, function(d) { return d.date; }));
       }
-
-      x.domain(d3.extent(data, function(d) { return d.date; }));
 
       y.domain([
         d3.min(languages, function(l) { return d3.min(l.values, function(v) { return v.count; }); }),
@@ -167,17 +166,16 @@
         .text("Repositories");
 
       var language = svg.selectAll(".language")
-        .data(languages)
-      .enter().append("g")
+        .data(languages).enter()
+      .append("g")
         .attr("class", "language");
-
-      language.append("path")
+      .append("path")
         .attr("class", "line")
         .attr("d", function(d) { return line(d.values); })
         .attr("data-legend",function(d) { return d.name})
         .style("stroke", function(d) { return color(d.name); });
 
-      legend = svg.append("g")
+      svg.append("g")
         .attr("class","legend")
         .attr("transform","translate(50,30)")
         .style("font-size","12px")

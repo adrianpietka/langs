@@ -1,6 +1,6 @@
 # Future Of Development
 
-Technology Trends
+Analysis of technology trends using information from GitHub repositories.
 
 Live demo: [future-of-development.azurewebsites.net](http://future-of-development.azurewebsites.net)
 
@@ -15,14 +15,14 @@ $: cd /path/to/project
 $: python -m pip install -r requirements.txt
 ```
 
-### How to run Jobs?
+### How to run jobs?
 
 ```
 $: cd /path/to/project
 $: python executejob.py [job_name]
 ```
 
-### How to run API?
+### How to run webapp?
 
 ```
 $: cd /path/to/project
@@ -36,11 +36,11 @@ github-index - Update index of repositories from GitHub
 github-metadata - Update metadata for repositories (stars count, last push etc.)
 ```
 
-## API - Access
+## Webapp - Access
 
 [http://localhost:5555](http://localhost:5555)
 
-## API - Endpoints
+## Webapp - Endpoints
 
 ```
 / - UI Dashboard
@@ -50,9 +50,3 @@ github-metadata - Update metadata for repositories (stars count, last push etc.)
 /github/new-repositories/monthly - Number of new repositories by programming language per month
 /github/new-repositories/yearly - Number of new repositories by programming language per year
 ```
-
-## Sources of information
-
-- [x] GitHub
-- [ ] Twitter
-- [ ] StackOverflow

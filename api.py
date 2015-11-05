@@ -76,7 +76,7 @@ def github_languages_stats():
 def github_new_repositories_monthly():
     sql = ('SELECT language, DATE_FORMAT(created_at, \'%Y-%m\') AS `created`, COUNT(*) AS `count` '
         'FROM github_index '
-        'WHERE language = \'Ruby\' OR language = \'PHP\' OR language = \'Python\' '
+        'WHERE language IN (\'Ruby\', \'JavaScript\', \'PHP\', \'Python\', \'Perl\', \'C\') '
         'GROUP BY language, DATE_FORMAT(created_at, \'%Y-%m\') '
         'ORDER BY DATE(created_at) DESC')
     with g.db.cursor() as cursor:
@@ -92,7 +92,7 @@ def github_new_repositories_monthly():
 def github_new_repositories_yearly():
     sql = ('SELECT language, YEAR(created_at) AS `created`, COUNT(*) AS `count` '
         'FROM github_index '
-        'WHERE language = \'Ruby\' OR language = \'PHP\' OR language = \'Python\' '
+        'WHERE language IN (\'Ruby\', \'JavaScript\', \'PHP\', \'Python\', \'Perl\', \'C\') '
         'GROUP BY language, YEAR(created_at) '
         'ORDER BY DATE(created_at) DESC')
     with g.db.cursor() as cursor:
