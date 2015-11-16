@@ -1,7 +1,7 @@
 import pymysql
 import pprint
 from flask import Flask, jsonify, g, render_template
-from config import config
+from application.config import config
 
 app = Flask(__name__)
 

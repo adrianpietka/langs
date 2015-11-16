@@ -1,7 +1,7 @@
 import sys
 import argparse
 import pymysql.cursors
-from config import config
+from application.config import config
 from application.source.github import GitHub
 from application.commands.prepare_database_sharding import PrepareDatabaseSharding
 

@@ -1,5 +1,4 @@
 import pymysql.cursors
-from config import config
 
 class PrepareDatabaseSharding:
     shards = 'abcdef0123456789'
