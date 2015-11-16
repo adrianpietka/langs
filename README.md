@@ -15,32 +15,33 @@ $: cd /path/to/project
 $: python -m pip install -r requirements.txt
 ```
 
-### How to run jobs?
+### Executing commands
 
 ```
 $: cd /path/to/project
-$: python executejob.py [job_name]
+$: python console.py [command]
 ```
 
-### How to run webapp?
+### How to run web application?
 
 ```
 $: cd /path/to/project
-$: python runserver.py
+$: python server.py
 ```
 
-## Jobs - List
+## Commands - List
 
 ```
+prepare-database-sharding - Update index of repositories from GitHub *temp command - to remove after migration to new db schema*
 github-index - Update index of repositories from GitHub
 github-metadata - Update metadata for repositories (stars count, last push etc.)
 ```
 
-## Webapp - Access
+## Web application - Access
 
 [http://localhost:5555](http://localhost:5555)
 
-## Webapp - Endpoints
+## Web application - Endpoints
 
 ```
 / - UI Dashboard

@@ -1,5 +1,5 @@
 from os import environ
-from api import app
+from application.api import app
 
 if __name__ == '__main__':
     DEBUG = environ.get('SERVER_DEBUG', True)
