@@ -1,9 +1,10 @@
 import sys
 import argparse
 import pymysql.cursors
+from application.github import *
+from application.commands import *
+from application.repositories import *
 from application.config import config
-from application.source.github import GitHub
-from application.commands.prepare_database_sharding import PrepareDatabaseSharding
 
 if not __name__ == '__main__':
     print('Unsupported execution type.')
@@ -20,9 +21,13 @@ try:
     if args.command == 'prepare-database-sharding':
         PrepareDatabaseSharding(connection).execute()
     elif args.command == 'github-index':
-        GitHub(connection, config['github_username'], config['github_password']).sync_index()
+        repository = IndexRepository(connection)
+        api = GitHubRestApi(config['github_username'], config['github_password'])
+        GitHubBuildIndex(repository, api).execute();
     elif args.command == 'github-metadata':
-        GitHub(connection, config['github_username'], config['github_password']).sync_metadata(1000)
+        repository = IndexRepository(connection)
+        api = GitHubRestApi(config['github_username'], config['github_password'])
+        GitHubUpdateMetadata(repository, api).execute();
     else:
         print('Unsupported command: {}'.format(args.command))
 finally:
