@@ -1,5 +1,3 @@
-import pymysql.cursors
-
 class PrepareDatabaseSharding:
     shards = 'abcdef0123456789'
     sql_drop_table = 'DROP TABLE IF EXISTS `github_index_{}`'
