@@ -11,7 +11,7 @@ if not __name__ == '__main__':
     sys.exit(0)
 
 parser = argparse.ArgumentParser(description="Future Of Development - Execute Command.")
-parser.add_argument('command', help="command to execute (available: github-index, github-metadata, prepare-database-sharding)")
+parser.add_argument('command', help="command to execute (available: github-index, github-metadata, github-update, prepare-database-sharding)")
 args = parser.parse_args()
 
 try:
@@ -25,7 +25,9 @@ try:
     elif args.command == 'github-index':
         GitHubBuildIndex(repository, api).execute();
     elif args.command == 'github-metadata':
-        GitHubUpdateMetadata(repository, api).execute();
+        GitHubBuildMetadata(repository, api).execute();
+    elif args.command == 'github-update':
+        GitHubUpdate(repository, api).execute();
     else:
         print('Unsupported command: {}'.format(args.command))
 finally:

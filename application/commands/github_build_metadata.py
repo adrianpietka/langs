@@ -1,4 +1,4 @@
-class GitHubUpdateMetadata:
+class GitHubBuildMetadata:
     def __init__(self, repository, api):
         self.repository = repository
         self.api = api

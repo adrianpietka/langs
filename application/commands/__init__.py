@@ -1,3 +1,4 @@
 from application.commands.github_build_index import GitHubBuildIndex
-from application.commands.github_update_metadata import GitHubUpdateMetadata
+from application.commands.github_build_metadata import GitHubBuildMetadata
+from application.commands.github_update import GitHubUpdate
 from application.commands.prepare_database_sharding import PrepareDatabaseSharding
