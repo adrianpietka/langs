@@ -1,87 +1,68 @@
-/* Space out content a bit */
 body {
-  padding-top: 20px;
+  padding-top: 50px;
   padding-bottom: 20px;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
-.footer {
-  padding-right: 15px;
-  padding-left: 15px;
+footer {
+  border-top: 1px solid #ddd;
+  margin-top: 30px;
+  padding: 30px 0;
 }
 
-/* Custom page header */
-.header {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5e5;
-}
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-  margin-top: 0;
+/* project description */
+#project {
   margin-bottom: 0;
-  line-height: 40px;
 }
 
-/* Custom page footer */
-.footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
-}
-
-/* Customize container */
-@media (min-width: 768px) {
-  .container {
-    max-width: 730px;
+  #project .description .well {
+    border-radius: 0;
+    line-height: 200%;
+    margin-bottom: 0;
   }
-}
-.container-narrow > hr {
-  margin: 30px 0;
-}
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  padding: 14px 24px;
-  font-size: 21px;
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
-  margin-top: 28px;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-right: 0;
-    padding-left: 0;
+  #project .description .alert {
+    font-size: 14px; 
   }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
+
+  #project .octocat img {
+    width: 100%;
   }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
+
+  #global-stats .content {
+    display: none;
   }
+
+/* stats nav bar */
+#stats {
+  background: #dddddd;
+  margin-bottom: 30px;
 }
 
-.report-group .content {
-  display: none;
-}
+  #stats .active {
+    background: #eee;
+  }
 
+/* pages */
+#pages {}
+
+  #pages .loading {
+    margin-bottom: 0;
+  }
+
+  #pages .page {
+    display: none;
+  }
+
+  #pages .page h2 {
+    text-align: center;
+  }
+
+  #pages .page > div {
+    text-align: center;
+    padding-top: 30px;
+  }
+
+/* graphs */
 .axis path,
 .axis line {
   fill: none;

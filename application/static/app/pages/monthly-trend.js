@@ -1,8 +1,10 @@
-function newRepositoriesMonthly() {
-  $.getJSON('/github/new-repositories/monthly', function(response) {
-    $('#gitHubNewRepositoriesTrend .loading').hide();
-    $('#gitHubNewRepositoriesTrend .content').show();
+function pageMonthlyTrend(successCallback) {
+  if ($('#page-monthly-trend-data').html() !== '') {
+    successCallback();
+    return;
+  }
 
+  api.newRepositoriesMonthly(function(data) {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = 700 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -14,7 +16,6 @@ function newRepositoriesMonthly() {
 
     var color = d3.scale.category10();
 
-
     var xAxis = d3.svg.axis().scale(x).orient("bottom");
     var yAxis = d3.svg.axis().scale(y).orient("left");
 
@@ -22,20 +23,20 @@ function newRepositoriesMonthly() {
         .x(function(d) { return x(d.date); })
         .y(function(d) { return y(d.count); });
 
-    var svg = d3.select("#gitHubNewRepositories").append("svg")
+    var svg = d3.select("#page-monthly-trend-data").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var languages = [];
-    for (var language in response.data) {
+    for (var language in data) {
       var values = [];
     
-      for (var perioid in response.data[language]) {
+      for (var perioid in data[language]) {
         values.push({
           'date' : parseDate(perioid),
-          'count' : response.data[language][perioid]
+          'count' : data[language][perioid]
         });
       };
 
@@ -78,5 +79,7 @@ function newRepositoriesMonthly() {
       .attr("transform","translate(50,30)")
       .style("font-size","12px")
       .call(d3.legend);
+
+    successCallback();
   });
 }
