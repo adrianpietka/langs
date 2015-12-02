@@ -106,8 +106,9 @@ class IndexRepository:
             return [row['language'] for row in cursor.fetchall()]
 
     def get_languages_stats(self):
-        sql = ('SELECT language, COUNT(*) AS `repositories`'
+        sql = ('SELECT language, COUNT(*) AS `repositories`, CAST(ROUND(COUNT(1) / gi.total * 100) AS INT) AS `percentage` '
             'FROM github_index '
+            'CROSS JOIN (SELECT COUNT(1) AS total FROM github_index WHERE metadata_updated_at IS NOT NULL) gi '
             'WHERE language IS NOT NULL '
             'GROUP BY language '
             'ORDER BY COUNT(*) DESC')

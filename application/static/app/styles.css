@@ -9,6 +9,10 @@ footer {
   padding: 30px 0;
 }
 
+table th {
+  text-align: center;
+}
+
 /* project description */
 #project {
   margin-bottom: 0;
